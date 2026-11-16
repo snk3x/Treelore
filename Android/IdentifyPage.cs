@@ -29,7 +29,8 @@ public class IdentifyPage : ContentPage
 		Title = "Identify";
 		var take = Ui.Primary(Settings.Say("📷 Take picture", "Take photo"), () => AddPhoto(camera: true));
 		var pick = Ui.Secondary(Settings.Say("🖼 Pick picture", "From gallery"), () => AddPhoto(camera: false));
-		var startOver = Ui.Secondary(Settings.Say("Start a new tree", "Start over"), () => { Reset(); return Task.CompletedTask; });
+		_startOver = Ui.Secondary(Settings.Say("Start a new tree", "Start over"), () => { Reset(); return Task.CompletedTask; });
+		var startOver = _startOver;
 		if (Settings.KidMode)
 			foreach (var b in new[] { take, pick, startOver }) { b.FontSize = 19; b.HeightRequest = 60; }
 
@@ -62,6 +63,7 @@ public class IdentifyPage : ContentPage
 	}
 
 	readonly ContentView _challenge = new();
+	readonly Button _startOver;
 
 	protected override async void OnAppearing()
 	{
@@ -214,6 +216,7 @@ public class IdentifyPage : ContentPage
 		}
 
 		_results.Children.Clear();
+		_startOver.IsVisible = _shots.Count > 0;
 		_location.Text = _lat == null ? "" : $"Using {_locationSource} to favor trees that grow nearby.";
 		if (_shots.Count == 0)
 		{

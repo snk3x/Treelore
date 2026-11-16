@@ -38,17 +38,18 @@ public class AboutPage : ContentPage
 
 	View KidModeSwitch()
 	{
-		var sw = new Switch { IsToggled = Settings.KidMode };
-		bool reverting = false;
+		var sw = new Switch { IsToggled = Settings.KidMode, ThumbColor = Colors.White }
+			.Themed(Switch.OnColorProperty, "#2E6B3A", "#3F8A4E");
 		sw.Toggled += async (s, e) =>
 		{
-			if (reverting) return;
-			if (!e.Value && !await GrownUpCheck())
+			// Ignore events that match the current setting, including the one from snapping back below,
+			// which Android can deliver after this handler has moved on
+			if (e.Value == Settings.KidMode) return;
+			if (!e.Value)
 			{
-				reverting = true;
+				// Snap back to on right away, so the switch never shows "off" while the grown-up question is open
 				sw.IsToggled = true;
-				reverting = false;
-				return;
+				if (!await GrownUpCheck()) return;
 			}
 			Settings.KidMode = e.Value;
 			Settings.Reload();
