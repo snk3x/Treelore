@@ -1,0 +1,212 @@
+{
+  "Quercus virginiana": {
+    "common": "Live oak", "family": "Beech family (Fagaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "yes", "thorns": "no"},
+    "features": ["Leathery, oval leaves with smooth edges, dark green on top and pale underneath", "Keeps its leaves through winter", "Wide, spreading crown, often wider than tall", "Small, dark, long acorns, often in clusters"],
+    "lookalikes": [["Quercus nigra", "Water oak leaves are wider at the tip (spoon-shaped) and the tree drops most leaves by late winter."]],
+    "notes": []
+  },
+  "Quercus stellata": {
+    "common": "Post oak", "family": "Beech family (Fagaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "yes", "evergreen": "no", "thorns": "no"},
+    "features": ["Leaves with two large middle lobes that make a cross or Maltese-cross shape", "Thick, rough, star-shaped hairs underneath the leaf", "Small acorns with a bowl-shaped, scaly cap covering about a third of the nut"],
+    "lookalikes": [["Quercus macrocarpa", "Bur oak acorns are large with a deep, fringed cap, and its leaves have a narrow waist near the middle."]],
+    "notes": []
+  },
+  "Quercus shumardii": {
+    "common": "Shumard oak", "family": "Beech family (Fagaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "yes", "evergreen": "no", "thorns": "no"},
+    "features": ["Deeply cut lobes that end in sharp bristle tips", "Glossy, smooth leaves with deep, rounded gaps between the lobes", "Red to orange fall color"],
+    "lookalikes": [["Quercus stellata", "Post oak lobes are rounded with no bristle tips."]],
+    "notes": []
+  },
+  "Quercus macrocarpa": {
+    "common": "Bur oak", "family": "Beech family (Fagaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "yes", "evergreen": "no", "thorns": "no"},
+    "features": ["Large leaves with a deep cut near the middle, giving a narrow waist", "Very large acorns with a deep, fringed (mossy) cap", "Thick, deeply furrowed bark; corky ridges on young twigs"],
+    "lookalikes": [["Quercus stellata", "Post oak acorns are small with a plain scaly cap, and its leaves are cross-shaped."]],
+    "notes": []
+  },
+  "Quercus nigra": {
+    "common": "Water oak", "family": "Beech family (Fagaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Spoon-shaped leaves, wide at the tip and narrow at the base, sometimes with 3 shallow lobes", "Holds some leaves into winter, then drops them", "Common in wet bottomlands and yards in East Texas"],
+    "lookalikes": [["Quercus virginiana", "Live oak keeps all its leaves through winter and the leaves are oval, not spoon-shaped."]],
+    "notes": []
+  },
+  "Ulmus crassifolia": {
+    "common": "Cedar elm", "family": "Elm family (Ulmaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no", "leafsize": "small"},
+    "features": ["Small leaves, usually under 2 inches, rough like sandpaper on top", "Twigs often have corky wings", "Flowers and seeds appear in late summer or fall, unlike most elms"],
+    "lookalikes": [["Ulmus americana", "American elm leaves are 3 to 6 inches long with a strongly lopsided base."]],
+    "notes": []
+  },
+  "Ulmus americana": {
+    "common": "American elm", "family": "Elm family (Ulmaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no", "leafsize": "large"},
+    "features": ["Leaves 3 to 6 inches long with double-toothed edges and a lopsided base", "Vase-shaped crown", "Flat, round seeds with a notch at the tip, in early spring"],
+    "lookalikes": [["Ulmus crassifolia", "Cedar elm leaves are much smaller, usually under 2 inches."]],
+    "notes": []
+  },
+  "Celtis laevigata": {
+    "common": "Sugarberry", "family": "Hemp family (Cannabaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Smooth gray bark covered in corky warts", "Lance-shaped leaves with a long tapered tip and uneven base", "Small orange to purple berries eaten by birds"],
+    "lookalikes": [["Ulmus americana", "Elm bark is furrowed without corky warts, and elm leaves have double-toothed edges."]],
+    "notes": []
+  },
+  "Carya illinoinensis": {
+    "common": "Pecan", "family": "Walnut family (Juglandaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "pinnate", "lobed": "no", "evergreen": "no", "thorns": "no", "nut": "splits"},
+    "features": ["Compound leaves with 9 to 17 curved, sickle-shaped leaflets", "Nuts in a thin husk that splits into 4 sections when ripe", "Texas state tree"],
+    "lookalikes": [["Juglans nigra", "Black walnut husks are round green balls that don't split open, and its leaflets are straighter and more numerous (15 to 23)."]],
+    "notes": []
+  },
+  "Juglans nigra": {
+    "common": "Black walnut", "family": "Walnut family (Juglandaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "pinnate", "lobed": "no", "evergreen": "no", "thorns": "no", "nut": "round"},
+    "features": ["Compound leaves with 15 to 23 leaflets, the end leaflet often missing", "Round green fruit that doesn't split open and stains hands brown", "Dark, deeply furrowed bark in a diamond pattern"],
+    "lookalikes": [["Carya illinoinensis", "Pecan husks split into 4 sections and its leaflets are fewer and curved."], ["Fraxinus pennsylvanica", "Green ash leaves and twigs are opposite each other, not alternate."]],
+    "notes": ["Roots and leaves release juglone, which harms many garden plants nearby."]
+  },
+  "Prosopis glandulosa": {
+    "common": "Honey mesquite", "family": "Pea family (Fabaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "bipinnate", "lobed": "no", "evergreen": "no", "thorns": "yes"},
+    "features": ["Feathery leaves split into two (sometimes more) branches of small leaflets", "Paired straight thorns on the twigs", "Long, flat, yellowish bean pods in summer"],
+    "lookalikes": [["Melia azedarach", "Chinaberry leaves are much larger with toothed leaflets, and it has no thorns."]],
+    "notes": ["Now classified as Neltuma glandulosa by some sources."]
+  },
+  "Juniperus ashei": {
+    "common": "Ashe juniper", "family": "Cypress family (Cupressaceae)",
+    "traits": {"arrangement": "scale", "leaf": "scale", "lobed": "no", "evergreen": "yes", "thorns": "no", "trunks": "many"},
+    "features": ["Tiny scale-like leaves on cord-like twigs", "Often several trunks from the base, forming a rounded shrubby tree", "Grows on limestone hills of the Edwards Plateau; often called \"mountain cedar\"", "Blue berry-like cones, slightly larger than eastern red cedar's"],
+    "lookalikes": [["Juniperus virginiana", "Eastern red cedar usually has one straight trunk and a narrow cone shape, and is more common east of the Hill Country."]],
+    "notes": ["A major source of winter \"cedar fever\" pollen in December and January."]
+  },
+  "Juniperus virginiana": {
+    "common": "Eastern red cedar", "family": "Cypress family (Cupressaceae)",
+    "traits": {"arrangement": "scale", "leaf": "scale", "lobed": "no", "evergreen": "yes", "thorns": "no", "trunks": "one"},
+    "features": ["Tiny scale-like leaves; young shoots may have short prickly needles", "Usually one straight trunk with a narrow pyramid or column shape", "Reddish, thin, shreddy bark"],
+    "lookalikes": [["Juniperus ashei", "Ashe juniper usually has several trunks from the base and grows mostly on Hill Country limestone."]],
+    "notes": []
+  },
+  "Pinus taeda": {
+    "common": "Loblolly pine", "family": "Pine family (Pinaceae)",
+    "traits": {"arrangement": "needles", "leaf": "needle", "lobed": "no", "evergreen": "yes", "thorns": "no"},
+    "features": ["Needles 6 to 9 inches long, usually in bundles of 3", "Cones 3 to 6 inches with sharp prickles on the scales", "Tall, straight trunk with scaly, reddish-brown plates"],
+    "lookalikes": [["Taxodium distichum", "Bald cypress needles are short, flat and soft, and it drops them in fall."]],
+    "notes": []
+  },
+  "Taxodium distichum": {
+    "common": "Bald cypress", "family": "Cypress family (Cupressaceae)",
+    "traits": {"arrangement": "needles", "leaf": "needle", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Short, flat, soft needles in two rows, like a feather", "Turns rusty orange and drops its needles in fall", "Knobby \"knees\" rising from the roots near water", "Fibrous, shreddy reddish bark and a flared base"],
+    "lookalikes": [["Juniperus virginiana", "Eastern red cedar keeps scale-like leaves all year."]],
+    "notes": []
+  },
+  "Liquidambar styraciflua": {
+    "common": "Sweetgum", "family": "Sweetgum family (Altingiaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "yes", "evergreen": "no", "thorns": "no"},
+    "features": ["Star-shaped leaves with 5 to 7 pointed lobes", "Spiky round seed balls (\"gumballs\") that hang on through winter", "Twigs often have corky wings; brilliant fall color"],
+    "lookalikes": [["Platanus occidentalis", "Sycamore leaves are larger with shallower lobes, and its bark peels in white and tan patches."]],
+    "notes": []
+  },
+  "Platanus occidentalis": {
+    "common": "American sycamore", "family": "Plane-tree family (Platanaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "yes", "evergreen": "no", "thorns": "no"},
+    "features": ["Bark peels in patches, leaving white, tan and green camouflage colors", "Large leaves with 3 to 5 shallow lobes", "Single round seed balls hanging on long stems"],
+    "lookalikes": [["Liquidambar styraciflua", "Sweetgum leaves are star-shaped with deeper lobes and its seed balls are spiky."]],
+    "notes": []
+  },
+  "Magnolia grandiflora": {
+    "common": "Southern magnolia", "family": "Magnolia family (Magnoliaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "yes", "thorns": "no"},
+    "features": ["Large, thick, glossy leaves, often rusty-brown and fuzzy underneath", "Huge white fragrant flowers in late spring and summer", "Cone-like fruit with bright red seeds"],
+    "lookalikes": [["Quercus virginiana", "Live oak leaves are much smaller (1 to 4 inches) and not glossy."]],
+    "notes": []
+  },
+  "Diospyros texana": {
+    "common": "Texas persimmon", "family": "Ebony family (Ebenaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no", "bark": "smooth"},
+    "features": ["Smooth, pale gray bark that peels to show white and pink patches, like crape myrtle", "Small, leathery leaves with rolled-under edges", "Small black fruit in late summer; usually a shrub or small multi-trunk tree"],
+    "lookalikes": [["Lagerstroemia indica", "Crape myrtle leaves are opposite or nearly so, and it has showy pink, red or white flower clusters."], ["Diospyros virginiana", "Common persimmon has dark, blocky bark and large orange fruit."]],
+    "notes": []
+  },
+  "Diospyros virginiana": {
+    "common": "Common persimmon", "family": "Ebony family (Ebenaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no", "bark": "blocky"},
+    "features": ["Dark bark broken into small square blocks, like alligator skin", "Oval leaves 3 to 6 inches with smooth edges", "Orange fruit about 1 to 2 inches, sweet only when fully ripe and soft"],
+    "lookalikes": [["Diospyros texana", "Texas persimmon has smooth peeling gray bark and small black fruit."]],
+    "notes": []
+  },
+  "Cercis canadensis": {
+    "common": "Eastern redbud", "family": "Pea family (Fabaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Heart-shaped leaves with smooth edges", "Pink-purple flowers along bare branches in early spring", "Flat brown pea-like pods"],
+    "lookalikes": [["Triadica sebifera", "Chinese tallow leaves are diamond-shaped with a pointed tip, not heart-shaped."]],
+    "notes": []
+  },
+  "Triadica sebifera": {
+    "common": "Chinese tallow", "family": "Spurge family (Euphorbiaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Diamond or heart-shaped leaves with a long pointed tip", "Clusters of white, waxy, popcorn-like seeds in fall", "Bright red, orange and purple fall color"],
+    "lookalikes": [["Cercis canadensis", "Redbud leaves are heart-shaped with a rounded tip, and it flowers pink before leafing out."]],
+    "notes": ["Invasive in Texas. It spreads aggressively into prairies and wetlands; the Texas Invasive Species Institute recommends removal.", "Sap and berries are toxic if eaten."]
+  },
+  "Fraxinus pennsylvanica": {
+    "common": "Green ash", "family": "Olive family (Oleaceae)",
+    "traits": {"arrangement": "opposite", "leaf": "pinnate", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Compound leaves with 5 to 9 leaflets, opposite each other on the twig", "Bark with tight diamond-shaped ridges", "Narrow, paddle-shaped winged seeds in clusters"],
+    "lookalikes": [["Juglans nigra", "Black walnut leaves and twigs alternate along the branch and have many more leaflets."], ["Carya illinoinensis", "Pecan leaves alternate along the branch."]],
+    "notes": ["Threatened by the emerald ash borer, which has been found in North and East Texas. Report D-shaped exit holes in the bark to the Texas A&M Forest Service."]
+  },
+  "Salix nigra": {
+    "common": "Black willow", "family": "Willow family (Salicaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Long, narrow, finely toothed leaves", "Grows along creeks, rivers and ponds", "Dark, deeply furrowed bark; often leaning or multi-trunk"],
+    "lookalikes": [["Populus deltoides", "Cottonwood leaves are triangular and much wider."]],
+    "notes": []
+  },
+  "Populus deltoides": {
+    "common": "Eastern cottonwood", "family": "Willow family (Salicaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Triangular leaves with coarse teeth and flattened stems that make them flutter", "Cottony seeds released in late spring", "Very large, fast-growing tree near water"],
+    "lookalikes": [["Salix nigra", "Black willow leaves are long and narrow."]],
+    "notes": []
+  },
+  "Ilex vomitoria": {
+    "common": "Yaupon holly", "family": "Holly family (Aquifoliaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "yes", "thorns": "no"},
+    "features": ["Small, oval evergreen leaves with rounded teeth", "Bright red berries on female plants in fall and winter", "Smooth, light gray bark; usually a shrub or small tree"],
+    "lookalikes": [["Quercus virginiana", "Live oak leaves are larger with smooth edges, and it grows into a large tree."]],
+    "notes": ["Berries can cause vomiting if eaten; keep them away from children and pets."]
+  },
+  "Dermatophyllum secundiflorum": {
+    "common": "Texas mountain laurel", "family": "Pea family (Fabaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "pinnate", "lobed": "no", "evergreen": "yes", "thorns": "no"},
+    "features": ["Glossy evergreen compound leaves with 5 to 11 rounded leaflets", "Purple flower clusters in early spring that smell like grape soda", "Woody pods with bright red seeds"],
+    "lookalikes": [["Ilex vomitoria", "Yaupon leaves are simple (one blade per stem), not compound."]],
+    "notes": ["Seeds are highly poisonous if chewed. Keep them away from children and pets."]
+  },
+  "Lagerstroemia indica": {
+    "common": "Crape myrtle", "family": "Loosestrife family (Lythraceae)",
+    "traits": {"arrangement": "opposite", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "no", "bark": "smooth"},
+    "features": ["Smooth, peeling bark in tan, gray and cinnamon patches", "Large clusters of crinkled pink, red, purple or white flowers in summer", "Planted ornamental, often with multiple trunks"],
+    "lookalikes": [["Diospyros texana", "Texas persimmon leaves alternate along the twig and it has small black fruit instead of showy flowers."]],
+    "notes": ["Not native; widely planted in yards and along streets."]
+  },
+  "Melia azedarach": {
+    "common": "Chinaberry", "family": "Mahogany family (Meliaceae)",
+    "traits": {"arrangement": "alternate", "leaf": "bipinnate", "lobed": "no", "evergreen": "no", "thorns": "no"},
+    "features": ["Large, twice-compound leaves with toothed leaflets", "Fragrant lilac flowers in spring", "Round yellow berries that hang on through winter"],
+    "lookalikes": [["Prosopis glandulosa", "Honey mesquite has thorns and much smaller leaflets."]],
+    "notes": ["Invasive in Texas.", "Berries are poisonous to people and pets if eaten."]
+  },
+  "Maclura pomifera": {
+    "common": "Osage orange (bois d'arc)", "family": "Mulberry family (Moraceae)",
+    "traits": {"arrangement": "alternate", "leaf": "simple", "lobed": "no", "evergreen": "no", "thorns": "yes"},
+    "features": ["Large, bumpy, green softball-sized fruit (\"horse apples\")", "Sharp thorns on the twigs", "Glossy, oval leaves with a long tip; orange inner bark and milky sap"],
+    "lookalikes": [["Celtis laevigata", "Sugarberry has no thorns, warty bark and small berries."]],
+    "notes": []
+  }
+}

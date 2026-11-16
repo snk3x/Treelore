@@ -1,0 +1,32 @@
+# 30-species feasibility set, Texas and South Central
+# Chosen to include hard look-alike groups (oaks, elms/hackberry, junipers, persimmons)
+Quercus virginiana
+Quercus stellata
+Quercus shumardii
+Quercus macrocarpa
+Quercus nigra
+Ulmus crassifolia
+Ulmus americana
+Celtis laevigata
+Carya illinoinensis
+Juglans nigra
+Prosopis glandulosa
+Juniperus ashei
+Juniperus virginiana
+Pinus taeda
+Taxodium distichum
+Liquidambar styraciflua
+Platanus occidentalis
+Magnolia grandiflora
+Diospyros texana
+Diospyros virginiana
+Cercis canadensis
+Triadica sebifera
+Fraxinus pennsylvanica
+Salix nigra
+Populus deltoides
+Ilex vomitoria
+Dermatophyllum secundiflorum
+Lagerstroemia indica
+Melia azedarach
+Maclura pomifera

@@ -1,0 +1,19 @@
+# Build output
+bin/
+obj/
+*.user
+.vs/
+
+# Python environment and caches
+training/.venv/
+__pycache__/
+
+# Training photos live outside the repo (TREE_DATA, default %USERPROFILE%\Tree ID data)
+training/data/
+
+# Training outputs: checkpoints, exported models, cached predictions, logs.
+# The model the app ships with is kept in Android/Resources/Raw/pack.
+training/out/*.pt
+training/out/*.onnx
+training/out/*.npy
+training/*.log

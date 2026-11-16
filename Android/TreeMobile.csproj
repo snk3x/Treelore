@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Tree ID for Android phones. Identifies trees offline from one or more photos; the model, species data
+	     and range data ship inside the app as a region pack (Resources/Raw/pack). Shared logic lives in Core. -->
+	<PropertyGroup>
+		<TargetFramework>net10.0-android</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>TreeMobile</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+		<ApplicationTitle>Tree ID</ApplicationTitle>
+		<ApplicationId>com.snk3x.treeid</ApplicationId>
+		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<!-- Android 7.0 or newer: ONNX Runtime's Android library requires API 24. -->
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<!-- 32-bit ARM for older and budget phones (like the LG K30) plus 64-bit ARM. x64 is left out:
+		     only emulators use it, and each extra ABI adds the ONNX Runtime library again. -->
+		<RuntimeIdentifiers>android-arm;android-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+	<!-- Use the Android SDK and Java installed in the user profile, when present. -->
+	<PropertyGroup>
+		<AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' And Exists('$(LOCALAPPDATA)\Android\Sdk')">$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
+		<JavaSdkDirectory Condition="'$(JavaSdkDirectory)' == '' And Exists('$(LOCALAPPDATA)\Android\jdk')">$(LOCALAPPDATA)\Android\jdk</JavaSdkDirectory>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#1F4D29" />
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1F4D29" BaseSize="128,128" />
+		<MauiImage Include="Resources\Images\*" />
+		<MauiFont Include="Resources\Fonts\*" />
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core\TreeCore.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+	</ItemGroup>
+
+</Project>

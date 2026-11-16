@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true" android:label="Tree ID">
+		<!-- ONNX Runtime registers a telemetry start-up hook; the app doesn't want it and it fails on launch anyway. -->
+		<provider android:name="ai.onnxruntime.TelemetryInitializer" android:authorities="${applicationId}.onnxruntime_telemetry_initializer" tools:node="remove" />
+	</application>
+	<!-- The app works fully offline and promises nothing is uploaded. ONNX Runtime's Android library adds network
+	     permissions (it has a telemetry client); removing them here means no code in the app can reach the internet. -->
+	<uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<!-- Location narrows the answer to trees that grow nearby. It never leaves the phone. -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<!-- Lets the app read the GPS position saved inside gallery photos. -->
+	<uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
+	<uses-feature android:name="android.hardware.location" android:required="false" />
+	<!-- Needed so the app can open the phone's camera app (Android 11 and later). -->
+	<queries>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+	</queries>
+</manifest>

@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Core/TreeCore.csproj" />
+  </Folder>
+  <Folder Name="/Android/">
+    <Project Path="Android/TreeMobile.csproj" />
+  </Folder>
+  <Folder Name="/Eval/">
+    <Project Path="Eval/Eval.csproj" />
+  </Folder>
+</Solution>
