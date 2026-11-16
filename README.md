@@ -4,6 +4,16 @@ An Android app that identifies trees from photos, fully offline. Photograph a le
 
 The first region pack covers 30 common trees of Texas and the South Central US.
 
+## Tree book (for kids)
+
+Every tree in the pack starts as a mystery shadow in the **Tree book**. Identifying one reveals its card with the player's own photo and earns **leaves**:
+
+- New species: 10 (common), 25 (uncommon) or 50 (rare) leaves; rarity is local, based on how often the tree is actually observed nearby
+- Finding a species again: 2 leaves; photographing 3 different parts: +5
+- Ranks from Seedling to Forest Ranger, and badges such as Oak Squad, Winter Detective, Bark Reader, Invader Spotter and Safety Smart
+
+Only answers the app is sure about (85% or more, after any follow-up question) count, so kids don't learn wrong names. Poison warnings always show before the celebration. There are no accounts, maps, sharing, ads or purchases.
+
 ## Accuracy
 
 Measured on 7,276 held-out iNaturalist photos (4,368 sightings) the app never saw in training:
@@ -52,10 +62,11 @@ python -m venv .venv
 .venv\Scripts\pip install timm open_clip_torch onnx onnxruntime requests pillow tqdm scikit-learn
 .venv\Scripts\python download_inat.py
 powershell -File run_all.ps1
+.venv\Scripts\python fetch_abundance.py
 .venv\Scripts\python export_pack.py --dest ..\Android\Resources\Raw\pack
 ```
 
-Photos are stored outside the repo in `%USERPROFILE%\Tree ID data` (override with `TREE_DATA`). Species names, traits, look-alikes and safety notes are in `training/species_info.json`.
+Photos are stored outside the repo in `%USERPROFILE%\Tree ID data` (override with `TREE_DATA`). `fetch_abundance.py` saves real observation counts per area (wild and planted) to `abundance.json` for Tree book rarity; escarpment live oak is counted as live oak. Species names, traits, look-alikes and safety notes are in `training/species_info.json`.
 
 ## Credits
 

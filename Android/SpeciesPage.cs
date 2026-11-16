@@ -21,7 +21,9 @@ public class SpeciesPage : ContentPage
 		};
 
 		foreach (var note in sp.Notes)
-			stack.Add(IdentifyPage.IsWarning(note) ? new Label { Text = "⚠ " + note, FontSize = 15 }.WarnText() : Ui.Body(note));
+			stack.Add(SpeciesInfo.IsWarning(note) ? new Label { Text = "⚠ " + note, FontSize = 15 }.WarnText() : Ui.Body(note));
+		// Reading a poisonous tree's page counts toward the Safety Smart badge
+		FindStore.MarkViewed(sp.Scientific);
 
 		stack.Add(Ui.Heading("How to recognize it"));
 		foreach (var f in sp.Features) stack.Add(Ui.Bullet(f));

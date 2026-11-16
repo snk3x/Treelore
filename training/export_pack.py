@@ -68,6 +68,12 @@ def main():
         "questions": QUESTIONS,
         "range": dict(counts),
     }
+    # Real observation counts per cell for rarity (fetch_abundance.py); training counts are capped per species
+    abundance_file = ROOT / "abundance.json"
+    if abundance_file.exists():
+        ab = json.loads(abundance_file.read_text())
+        assert ab["labels"] == labels, "abundance.json was made for a different species list"
+        pack["abundance"] = ab["cells"]
     dest = Path(a.dest); dest.mkdir(parents=True, exist_ok=True)
     (dest / "pack.json").write_text(json.dumps(pack, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     shutil.copy(OUT / f"{a.model}_fp32.onnx", dest / "model.onnx")

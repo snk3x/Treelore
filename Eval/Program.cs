@@ -3,7 +3,10 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using TreeId;
 
-// Usage: Eval <pack folder> <data folder> <test_obs.txt> [max photos]
+// Usage: Eval [--quick] <pack folder> <data folder> <test_obs.txt> [max photos]
+// --quick runs only the logic checks, not the model on every test photo.
+bool quick = args.Contains("--quick");
+args = args.Where(a => a != "--quick").ToArray();
 var packDir = args.Length > 0 ? args[0] : @"..\Android\Resources\Raw\pack";
 var dataDir = args.Length > 1 ? args[1] : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Tree ID data");
 var testObsFile = args.Length > 2 ? args[2] : @"..\training\out\test_obs.txt";
@@ -44,6 +47,58 @@ Check("a confident result asks nothing", id.Identify(new[] { sure }, null, null)
 var prior = id.LocationPrior(30.05, -99.14);
 Check("Hill Country prior favors Ashe juniper", prior[Index("Juniperus ashei")] > prior[Index("Juniperus virginiana")]);
 Check("no location gives no prior", id.LocationPrior(null, null) == null);
+
+// --- Tree book game checks ---
+Console.WriteLine();
+Find Make(string name, double conf, Rarity rarity, int day, params Part[] parts) => new()
+{
+	Scientific = name, Common = name, Confidence = conf, Rarity = rarity,
+	When = new DateTime(2026, 6, 1).AddDays(day), Parts = parts.ToList(),
+};
+var none = new List<Find>();
+var a1 = Progress.AwardFor(pack, none, Make("Quercus virginiana", 0.95, Rarity.Common, 0, Part.Leaf));
+Check("first common find: new species, 10 leaves", a1.NewSpecies && a1.Points == 10);
+Check("first find earns the First Find badge", a1.NewBadges.Any(b => b.Id == "first"));
+var after1 = new List<Find> { Make("Quercus virginiana", 0.95, Rarity.Common, 0, Part.Leaf) };
+var a2 = Progress.AwardFor(pack, after1, Make("Quercus virginiana", 0.95, Rarity.Common, 1, Part.Leaf));
+Check("repeat find: not new, 2 leaves", !a2.NewSpecies && a2.Points == Progress.RepeatPoints);
+var a3 = Progress.AwardFor(pack, after1, Make("Taxodium distichum", 0.95, Rarity.Rare, 1, Part.Leaf, Part.Bark, Part.WholeTree));
+Check("rare find with 3 parts: 50 + 5 photo bonus", a3.Points == 55 && a3.PhotoBonus == 5);
+Check("leaf + bark earns Bark Reader", a3.NewBadges.Any(b => b.Id == "bark"));
+var a4 = Progress.AwardFor(pack, after1, Make("Quercus stellata", 0.60, Rarity.Common, 1, Part.Leaf));
+Check("unsure find (60%) earns nothing", !a4.Counted && a4.Points == 0 && a4.NewBadges.Count == 0);
+var a5 = Progress.AwardFor(pack, after1, Make("Triadica sebifera", 0.9, Rarity.Common, 1, Part.Leaf));
+Check("invasive tree earns Invader Spotter", a5.NewBadges.Any(b => b.Id == "invader"));
+
+var oakFinds = pack.Species.Where(s => s.Scientific.StartsWith("Quercus ")).Select((s, i) => Make(s.Scientific, 0.9, Rarity.Common, i, Part.Leaf)).ToList();
+var oakSummary = Progress.Compute(pack, oakFinds);
+Check("all 5 oaks earn Oak Squad", oakSummary.Badges.Single(b => b.Id == "oaks").Earned);
+Check("5 new commons = 50 leaves = Sprout rank", oakSummary.Points == 50 && oakSummary.Rank.Name == "Sprout");
+var winterFind = Make("Platanus occidentalis", 0.9, Rarity.Common, 0, Part.Bark);
+winterFind.When = new DateTime(2027, 1, 10);
+Check("bare tree in January earns Winter Detective", Progress.Compute(pack, new[] { winterFind }).Badges.Single(b => b.Id == "winter").Earned);
+var evergreenWinter = Make("Quercus virginiana", 0.9, Rarity.Common, 0, Part.Leaf);
+evergreenWinter.When = new DateTime(2027, 1, 10);
+Check("evergreen live oak in January does not", !Progress.Compute(pack, new[] { evergreenWinter }).Badges.Single(b => b.Id == "winter").Earned);
+var poison = pack.Species.Where(s => s.IsPoisonous).Select(s => s.Scientific).ToHashSet();
+Check("reading every poisonous tree earns Safety Smart", Progress.Compute(pack, none, poison).Badges.Single(b => b.Id == "safety").Earned);
+
+// Rarity should match what people actually see
+var austin = (30.27, -97.74);
+Check("live oak is common around Austin", Progress.RarityAt(pack, "Quercus virginiana", austin.Item1, austin.Item2) == Rarity.Common);
+Check("Ashe juniper is common around Austin", Progress.RarityAt(pack, "Juniperus ashei", austin.Item1, austin.Item2) == Rarity.Common);
+Check("planted crape myrtle is not rare around Austin", Progress.RarityAt(pack, "Lagerstroemia indica", austin.Item1, austin.Item2) != Rarity.Rare);
+Check("loblolly pine is common around Houston", Progress.RarityAt(pack, "Pinus taeda", 29.76, -95.37) != Rarity.Rare);
+Console.WriteLine("Rarity around Austin:  " + string.Join(", ", Enum.GetValues<Rarity>().Select(r =>
+	$"{r}: {pack.Species.Count(s => Progress.RarityAt(pack, s.Scientific, austin.Item1, austin.Item2) == r)}")));
+foreach (var name in new[] { "Quercus virginiana", "Juniperus ashei", "Taxodium distichum", "Quercus macrocarpa", "Pinus taeda", "Diospyros texana" })
+	Console.WriteLine($"  {name,-26} Austin {Progress.RarityAt(pack, name, 30.27, -97.74),-9} Houston {Progress.RarityAt(pack, name, 29.76, -95.37),-9} Dallas {Progress.RarityAt(pack, name, 32.78, -96.80)}");
+
+if (quick)
+{
+	Console.WriteLine(failures == 0 ? "\nAll checks passed." : $"\n{failures} check(s) failed.");
+	return failures == 0 ? 0 : 1;
+}
 
 // --- Accuracy on held-out test photos ---
 var testObs = File.ReadAllLines(testObsFile).ToHashSet();

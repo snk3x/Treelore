@@ -207,7 +207,13 @@ public class IdentifyPage : ContentPage
 
 		if (result.NextQuestion != null) _results.Children.Add(QuestionCard(result.NextQuestion));
 
-		_results.Children.Add(Ui.Primary($"Save as {top.Species.Common}", () => Save(top)));
+		if (top.Probability >= Identifier.ConfidentAt)
+			_results.Children.Add(Ui.Primary($"Save {top.Species.Common} to my tree book", () => Save(top)));
+		else
+		{
+			_results.Children.Add(Ui.Note("The app isn't sure yet, so this one won't go in the tree book. Add another photo, answer the question, or ask a grown-up to help check."));
+			_results.Children.Add(Ui.Secondary($"Save as a guess: {top.Species.Common}", () => Save(top)));
+		}
 		_results.Children.Add(Ui.Note("Never eat or use a wild plant based on this app's answer."));
 	}
 
@@ -226,7 +232,7 @@ public class IdentifyPage : ContentPage
 		};
 		if (_shots.Count > 1 && c.BestShot >= 0)
 			lines.Add(Ui.Note($"Strongest clue: your {TreeEngine.PartName(_shots[c.BestShot].Part)} photo"));
-		foreach (var warning in sp.Notes.Where(IsWarning))
+		foreach (var warning in sp.Warnings)
 			lines.Add(new Label { Text = "⚠ " + warning, FontSize = 13 }.WarnText());
 		lines.Add(Ui.Note("Tap for details and look-alikes"));
 		return Ui.Card(lines).OnTap(() => Navigation.PushAsync(new SpeciesPage(sp)));
@@ -249,24 +255,29 @@ public class IdentifyPage : ContentPage
 		try
 		{
 			Directory.CreateDirectory(FindStore.PhotoFolder);
-			var find = new Find { Scientific = c.Species.Scientific, Common = c.Species.Common, Confidence = c.Probability, Lat = _lat, Lng = _lng };
+			var find = new Find
+			{
+				Scientific = c.Species.Scientific, Common = c.Species.Common, Confidence = c.Probability, Lat = _lat, Lng = _lng,
+				Rarity = Progress.RarityAt(TreeEngine.Pack, c.Species.Scientific, _lat, _lng),
+			};
 			foreach (var shot in _shots)
 			{
 				var dest = Path.Combine(FindStore.PhotoFolder, $"{find.Id}_{find.Photos.Count}.jpg");
 				await Task.Run(() => PhotoDecoder.SaveCopy(shot.PhotoPath, dest));
 				find.Photos.Add(dest);
+				find.Parts.Add(shot.Part);
 			}
+			var award = Progress.AwardFor(TreeEngine.Pack, FindStore.Load(), find, FindStore.Viewed());
 			FindStore.Add(find);
-			await DisplayAlertAsync("Saved", $"{c.Species.Common} was added to My trees.", "OK");
 			Reset();
+			if (award.Counted)
+				await Navigation.PushModalAsync(new CelebrationPage(c.Species, find, award));
+			else
+				await DisplayAlertAsync("Saved as a guess", $"{c.Species.Common} is in My trees. It will count in your tree book once you find one the app is sure about.", "OK");
 		}
 		catch (Exception ex)
 		{
 			await DisplayAlertAsync("Couldn't save", ex.Message, "OK");
 		}
 	}
-
-	internal static bool IsWarning(string note) =>
-		note.Contains("toxic", StringComparison.OrdinalIgnoreCase) || note.Contains("poison", StringComparison.OrdinalIgnoreCase)
-		|| note.Contains("vomit", StringComparison.OrdinalIgnoreCase) || note.StartsWith("Invasive", StringComparison.OrdinalIgnoreCase);
 }

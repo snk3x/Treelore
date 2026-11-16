@@ -1,20 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using TreeId;
 
 namespace TreeMobile;
-
-/// <summary>A tree the user identified and saved.</summary>
-public sealed class Find
-{
-	public string Id { get; set; } = Guid.NewGuid().ToString("N");
-	public DateTime When { get; set; } = DateTime.Now;
-	public double? Lat { get; set; }
-	public double? Lng { get; set; }
-	public string Scientific { get; set; }
-	public string Common { get; set; }
-	public double Confidence { get; set; }
-	public List<string> Photos { get; set; } = new();
-}
 
 /// <summary>Saved finds, kept in a JSON file with their photos in the app's private storage.</summary>
 public static class FindStore
@@ -56,6 +44,22 @@ public static class FindStore
 		File.WriteAllText(tmp, JsonSerializer.Serialize(all, FindJson.Default.ListFind));
 		File.Move(tmp, FilePath, overwrite: true);
 	}
+
+	/// <summary>Species whose page the user has opened, for the Safety Smart badge.</summary>
+	public static HashSet<string> Viewed()
+	{
+		var raw = Preferences.Default.Get("viewedSpecies", "");
+		return raw.Split('|', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+	}
+
+	public static void MarkViewed(string scientific)
+	{
+		var all = Viewed();
+		if (all.Add(scientific)) Preferences.Default.Set("viewedSpecies", string.Join("|", all));
+	}
+
+	public static ProgressSummary Progress() =>
+		TreeId.Progress.Compute(TreeEngine.Pack, Load(), Viewed());
 }
 
 [JsonSerializable(typeof(List<Find>))]

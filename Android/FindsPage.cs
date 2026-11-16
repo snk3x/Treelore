@@ -1,3 +1,5 @@
+using TreeId;
+
 namespace TreeMobile;
 
 /// <summary>The user's life list: every tree they've saved, newest first.</summary>
@@ -49,7 +51,7 @@ public class FindsPage : ContentPage
 				{
 					new Label { Text = f.Common, FontSize = 16, FontAttributes = FontAttributes.Bold },
 					new Label { Text = f.Scientific, FontSize = 13, FontAttributes = FontAttributes.Italic }.MutedText(),
-					Ui.Note($"{f.When:MMMM d, yyyy}  ·  {f.Confidence:P0} match"),
+					Ui.Note($"{f.When:MMMM d, yyyy}  ·  {f.Confidence:P0} match" + (f.Verified ? "" : "  ·  guess, not in tree book")),
 				},
 			};
 			var delete = new Button { Text = "Delete", FontSize = 12, HeightRequest = 32, Padding = new Thickness(10, 0), HorizontalOptions = LayoutOptions.Start }

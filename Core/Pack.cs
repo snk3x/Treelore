@@ -16,8 +16,10 @@ public sealed class Pack
 	public double PriorWeight { get; set; }
 	public List<SpeciesInfo> Species { get; set; }
 	public List<Question> Questions { get; set; }
-	/// <summary>Observation counts per species, keyed by "floor(lat),floor(lng)".</summary>
+	/// <summary>Training-photo counts per species, keyed by "floor(lat),floor(lng)". Used for the location prior.</summary>
 	public Dictionary<string, int[]> Range { get; set; }
+	/// <summary>Real research-grade observation counts per species and cell, used for rarity. May be null.</summary>
+	public Dictionary<string, int[]> Abundance { get; set; }
 
 	public static Pack Load(Stream json) => JsonSerializer.Deserialize(json, PackJson.Default.Pack);
 	public static Pack Load(string json) => JsonSerializer.Deserialize(json, PackJson.Default.Pack);
@@ -35,6 +37,16 @@ public sealed class SpeciesInfo
 	public List<string> Notes { get; set; } = new();
 
 	public string Trait(string key) => Traits.TryGetValue(key, out var v) ? v : null;
+
+	/// <summary>Notes about poison, toxicity or invasiveness, shown before anything else.</summary>
+	public IEnumerable<string> Warnings => Notes.Where(IsWarning);
+	public bool IsPoisonous => Notes.Any(n => n.Contains("toxic", StringComparison.OrdinalIgnoreCase)
+		|| n.Contains("poison", StringComparison.OrdinalIgnoreCase) || n.Contains("vomit", StringComparison.OrdinalIgnoreCase));
+	public bool IsInvasive => Notes.Any(n => n.StartsWith("Invasive", StringComparison.OrdinalIgnoreCase));
+
+	public static bool IsWarning(string note) =>
+		note.Contains("toxic", StringComparison.OrdinalIgnoreCase) || note.Contains("poison", StringComparison.OrdinalIgnoreCase)
+		|| note.Contains("vomit", StringComparison.OrdinalIgnoreCase) || note.StartsWith("Invasive", StringComparison.OrdinalIgnoreCase);
 }
 
 public sealed class Question

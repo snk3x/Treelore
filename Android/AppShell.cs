@@ -1,6 +1,6 @@
 namespace TreeMobile;
 
-/// <summary>Bottom tab bar: Identify, My trees, Species, About.</summary>
+/// <summary>Bottom tab bar: Identify, Tree book, My trees, Species, About.</summary>
 public class AppShell : Shell
 {
 	public AppShell()
@@ -8,6 +8,7 @@ public class AppShell : Shell
 		FlyoutBehavior = FlyoutBehavior.Disabled;
 		var tabs = new TabBar();
 		tabs.Items.Add(Tab("Identify", "tab_identify.png", new IdentifyPage()));
+		tabs.Items.Add(Tab("Tree book", "tab_book.png", new TreeBookPage()));
 		tabs.Items.Add(Tab("My trees", "tab_finds.png", new FindsPage()));
 		tabs.Items.Add(Tab("Species", "tab_species.png", new SpeciesListPage()));
 		tabs.Items.Add(Tab("About", "tab_about.png", new AboutPage()));
