@@ -1,4 +1,4 @@
-# Tree ID feasibility results
+﻿# Treelore feasibility results
 
 30 species, 7327 training photos, 1838 test photos (1061 test observations). Model tf_efficientnet_lite0 at 224px, 15 epochs.
 

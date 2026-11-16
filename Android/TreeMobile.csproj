@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<!-- Tree ID for Android phones. Identifies trees offline from one or more photos; the model, species data
+	<!-- Treelore for Android phones. Identifies trees offline from one or more photos; the model, species data
 	     and range data ship inside the app as a region pack (Resources/Raw/pack). Shared logic lives in Core. -->
 	<PropertyGroup>
 		<TargetFramework>net10.0-android</TargetFramework>
@@ -12,7 +12,7 @@
 		<Nullable>disable</Nullable>
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
-		<ApplicationTitle>Tree ID</ApplicationTitle>
+		<ApplicationTitle>Treelore</ApplicationTitle>
 		<ApplicationId>com.snk3x.treeid</ApplicationId>
 		<ApplicationDisplayVersion>0.1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>

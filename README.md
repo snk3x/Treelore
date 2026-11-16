@@ -1,4 +1,4 @@
-# Tree ID
+﻿# Treelore
 
 An Android app that identifies trees from photos, fully offline. Photograph a leaf, the bark, buds, fruit or the whole tree; the app combines the photos, uses your location to favor trees that grow nearby, and asks a quick question when two species look alike.
 

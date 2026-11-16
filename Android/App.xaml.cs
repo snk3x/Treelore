@@ -1,4 +1,4 @@
-namespace TreeMobile;
+﻿namespace TreeMobile;
 
 public partial class App : Application
 {
@@ -9,5 +9,5 @@ public partial class App : Application
 		_ = TreeEngine.LoadAsync();
 	}
 
-	protected override Window CreateWindow(IActivationState activationState) => new(new AppShell()) { Title = "Tree ID" };
+	protected override Window CreateWindow(IActivationState activationState) => new(new AppShell()) { Title = "Treelore" };
 }

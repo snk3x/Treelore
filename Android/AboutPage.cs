@@ -16,7 +16,7 @@ public class AboutPage : ContentPage
 				Spacing = 8,
 				Children =
 				{
-					Ui.Title("About Tree ID"),
+					Ui.Title("About Treelore"),
 					_pack,
 					Ui.Heading("Kid mode"),
 					KidModeSwitch(),

@@ -1,4 +1,4 @@
-﻿using TreeId;
+using TreeId;
 
 namespace TreeMobile;
 
@@ -27,8 +27,8 @@ public class IdentifyPage : ContentPage
 	public IdentifyPage()
 	{
 		Title = "Identify";
-		var take = Ui.Primary(Settings.Say("ðŸ“· Take picture", "Take photo"), () => AddPhoto(camera: true));
-		var pick = Ui.Secondary(Settings.Say("ðŸ–¼ Pick picture", "From gallery"), () => AddPhoto(camera: false));
+		var take = Ui.Primary(Settings.Say("📷 Take picture", "Take photo"), () => AddPhoto(camera: true));
+		var pick = Ui.Secondary(Settings.Say("🖼 Pick picture", "From gallery"), () => AddPhoto(camera: false));
 		var startOver = Ui.Secondary(Settings.Say("Start a new tree", "Start over"), () => { Reset(); return Task.CompletedTask; });
 		if (Settings.KidMode)
 			foreach (var b in new[] { take, pick, startOver }) { b.FontSize = 19; b.HeightRequest = 60; }
@@ -75,7 +75,7 @@ public class IdentifyPage : ContentPage
 			Spacing = 2,
 			Children =
 			{
-				new Label { Text = "ðŸŽ¯ This week's challenge", FontSize = 13, FontAttributes = FontAttributes.Bold }.AccentText(),
+				new Label { Text = "🎯 This week's challenge", FontSize = 13, FontAttributes = FontAttributes.Bold }.AccentText(),
 				new Label { Text = next.Title, FontSize = 16, FontAttributes = FontAttributes.Bold },
 				Ui.Note($"+{next.Points} leaves. {next.Hint}"),
 			},
@@ -228,8 +228,8 @@ public class IdentifyPage : ContentPage
 		var result = TreeEngine.Identifier.Identify(_shots, _lat, _lng, _answers);
 		var top = result.Top[0];
 		bool sure = top.Probability >= Identifier.ConfidentAt;
-		string verdict = sure ? Settings.Say("I think it'sâ€¦", "Likely match")
-			: top.Probability >= 0.5 ? Settings.Say("Maybe it'sâ€¦", "Possible match") : Settings.Say("Hmm, I'm not sure yet", "Not sure yet");
+		string verdict = sure ? Settings.Say("I think it's…", "Likely match")
+			: top.Probability >= 0.5 ? Settings.Say("Maybe it's…", "Possible match") : Settings.Say("Hmm, I'm not sure yet", "Not sure yet");
 		_results.Children.Add(Ui.Heading(verdict));
 
 		foreach (var c in result.Top.Where(c => c.Probability >= 0.02))
@@ -239,7 +239,7 @@ public class IdentifyPage : ContentPage
 
 		if (sure)
 		{
-			var save = Ui.Primary(Settings.Say($"Add {top.Species.Common} to my tree book! ðŸŒ³", $"Save {top.Species.Common}"), () => Save(top));
+			var save = Ui.Primary(Settings.Say($"Add {top.Species.Common} to my tree book! 🌳", $"Save {top.Species.Common}"), () => Save(top));
 			if (Settings.KidMode) { save.FontSize = 19; save.HeightRequest = 64; }
 			_results.Children.Add(save);
 		}
@@ -261,7 +261,7 @@ public class IdentifyPage : ContentPage
 			Spacing = 2,
 			Children =
 			{
-				new Label { Text = $"{sp.Common}  Â·  {c.Probability:P0}", FontSize = 18, FontAttributes = FontAttributes.Bold },
+				new Label { Text = $"{sp.Common}  ·  {c.Probability:P0}", FontSize = 18, FontAttributes = FontAttributes.Bold },
 				new Label { Text = sp.Scientific, FontSize = 14, FontAttributes = FontAttributes.Italic }.MutedText(),
 				new ProgressBar { Progress = c.Probability, Margin = new Thickness(0, 4) }.Themed(ProgressBar.ProgressColorProperty, "#2E6B3A", "#8FD19E"),
 			},
@@ -269,7 +269,7 @@ public class IdentifyPage : ContentPage
 		if (_shots.Count > 1 && c.BestShot >= 0)
 			lines.Add(Ui.Note($"Strongest clue: your {TreeEngine.PartName(_shots[c.BestShot].Part)} photo"));
 		foreach (var warning in sp.Warnings)
-			lines.Add(new Label { Text = "âš  " + warning, FontSize = 13 }.WarnText());
+			lines.Add(new Label { Text = "⚠ " + warning, FontSize = 13 }.WarnText());
 		lines.Add(Ui.Note("Tap for details and look-alikes"));
 		return Ui.Card(lines).OnTap(() => Navigation.PushAsync(new SpeciesPage(sp)));
 	}
