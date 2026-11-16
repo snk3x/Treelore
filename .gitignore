@@ -1,6 +1,11 @@
 # Build output
 bin/
 obj/
+Android/release/
+
+# Never commit signing keys
+*.keystore
+*.jks
 *.user
 .vs/
 

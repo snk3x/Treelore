@@ -54,6 +54,16 @@ adb install --no-incremental bin/Release/net10.0-android/com.snk3x.treeid-Signed
 
 After changing `AndroidManifest.xml`, delete `bin` and `obj` before rebuilding. An incremental build can produce an APK that crashes on launch.
 
+## Releasing
+
+Release APKs are signed with the owner's Treelore key, kept outside the repo at `%USERPROFILE%\Treelore signing\treelore.keystore`. Run this in a terminal, type the keystore password when asked, and the signed APK lands in `Android\release\Treelore.apk`:
+
+```
+powershell -ExecutionPolicy Bypass -File .\Android\build-release.ps1
+```
+
+The script does a clean build, keeps the password only in memory, and stops if the APK came out signed with the debug key. Signing certificate SHA-256: `405516c603e86d37cb37c2b659734677804e747877f086bfedc3703b5ee884d3`.
+
 ## Training
 
 Requires Python 3.12 and an NVIDIA GPU.

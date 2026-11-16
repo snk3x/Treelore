@@ -25,6 +25,17 @@
 		<RuntimeIdentifiers>android-arm;android-arm64</RuntimeIdentifiers>
 	</PropertyGroup>
 
+	<!-- Release builds are signed with the owner's permanent Treelore key when it's on this computer (it is never in the
+	     repository). The password comes from the TREELORE_KEYSTORE_PASS environment variable, set only for the build by
+	     build-release.ps1. Without it, builds use the debug key and can't update a release-signed install. -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(TREELORE_KEYSTORE_PASS)' != '' And Exists('$(USERPROFILE)\Treelore signing\treelore.keystore')">
+		<AndroidKeyStore>true</AndroidKeyStore>
+		<AndroidSigningKeyStore>$(USERPROFILE)\Treelore signing\treelore.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>treelore</AndroidSigningKeyAlias>
+		<AndroidSigningStorePass>env:TREELORE_KEYSTORE_PASS</AndroidSigningStorePass>
+		<AndroidSigningKeyPass>env:TREELORE_KEYSTORE_PASS</AndroidSigningKeyPass>
+	</PropertyGroup>
+
 	<!-- Use the Android SDK and Java installed in the user profile, when present. -->
 	<PropertyGroup>
 		<AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' And Exists('$(LOCALAPPDATA)\Android\Sdk')">$(LOCALAPPDATA)\Android\Sdk</AndroidSdkDirectory>
