@@ -20,6 +20,10 @@ public sealed class Find
 	/// <summary>Only finds the app is sure about count toward the tree book, so kids don't learn wrong names.</summary>
 	[System.Text.Json.Serialization.JsonIgnore]
 	public bool Verified => Confidence >= Identifier.ConfidentAt;
+
+	/// <summary>Set while computing progress: true when this was the first verified find of its species.</summary>
+	[System.Text.Json.Serialization.JsonIgnore]
+	public bool IsFirstOfSpecies { get; set; }
 }
 
 public enum Rarity { Common, Uncommon, Rare }
@@ -56,6 +60,12 @@ public sealed class ProgressSummary
 	public Dictionary<string, Collected> Collection { get; init; }
 	public List<Badge> Badges { get; init; }
 	public int SpeciesCount { get; init; }
+	/// <summary>Leaves earned from completed weekly challenges (included in <see cref="Points"/>).</summary>
+	public int ChallengePoints { get; init; }
+	/// <summary>This week's challenges.</summary>
+	public List<Challenge> ThisWeek { get; init; }
+	/// <summary>Ids of every completed challenge, as "week start|challenge id".</summary>
+	public HashSet<string> CompletedChallenges { get; init; }
 }
 
 /// <summary>What one newly saved find earned.</summary>
@@ -67,6 +77,8 @@ public sealed class Award
 	public int PhotoBonus { get; init; }
 	public Rarity Rarity { get; init; }
 	public List<Badge> NewBadges { get; init; } = new();
+	public List<Challenge> NewChallenges { get; init; } = new();
+	public int ChallengePoints { get; init; }
 	public Rank NewRank { get; init; }
 	public ProgressSummary After { get; init; }
 }
@@ -122,20 +134,32 @@ public static class Progress
 		return position < 0.40 ? Rarity.Common : position < 0.75 ? Rarity.Uncommon : Rarity.Rare;
 	}
 
-	public static ProgressSummary Compute(Pack pack, IEnumerable<Find> finds, ISet<string> viewedSpecies = null)
+	/// <param name="today">The day whose week's challenges to report; defaults to now.</param>
+	public static ProgressSummary Compute(Pack pack, IEnumerable<Find> finds, ISet<string> viewedSpecies = null, DateTime? today = null)
 	{
-		var ordered = finds.Where(f => f.Verified).OrderBy(f => f.When).ToList();
+		var ordered = finds.Where(f => f.Verified && pack.Species.Any(s => s.Scientific == f.Scientific)).OrderBy(f => f.When).ToList();
 		int points = 0;
 		var collection = new Dictionary<string, Collected>();
 		foreach (var f in ordered)
 		{
-			var sp = pack.Species.FirstOrDefault(s => s.Scientific == f.Scientific);
-			if (sp == null) continue;
-			points += PointsFor(f, isNew: !collection.ContainsKey(f.Scientific));
+			var sp = pack.Species.First(s => s.Scientific == f.Scientific);
+			f.IsFirstOfSpecies = !collection.ContainsKey(f.Scientific);
+			points += PointsFor(f, f.IsFirstOfSpecies);
 			collection[f.Scientific] = collection.TryGetValue(f.Scientific, out var c)
 				? new Collected { Species = sp, First = c.First, Times = c.Times + 1, BestRarity = (Rarity)Math.Max((int)c.BestRarity, (int)f.Rarity) }
 				: new Collected { Species = sp, First = f, Times = 1, BestRarity = f.Rarity };
 		}
+
+		// Weekly challenges: every week with a verified find can complete up to three
+		int challengePoints = 0;
+		var completed = new HashSet<string>();
+		foreach (var week in ordered.Select(f => Challenges.WeekStart(f.When)).Distinct())
+			foreach (var ch in Challenges.ForWeek(pack, week, ordered).Where(c => c.Done))
+			{
+				challengePoints += ch.Points;
+				completed.Add($"{week:yyyy-MM-dd}|{ch.Id}");
+			}
+		points += challengePoints;
 
 		var rank = Ranks.Last(r => points >= r.MinPoints);
 		var next = Ranks.FirstOrDefault(r => r.MinPoints > points);
@@ -147,18 +171,23 @@ public static class Progress
 			Collection = collection,
 			Badges = Badges(pack, ordered, collection, viewedSpecies ?? new HashSet<string>()),
 			SpeciesCount = pack.Species.Count,
+			ChallengePoints = challengePoints,
+			ThisWeek = Challenges.ForWeek(pack, today ?? DateTime.Now, ordered),
+			CompletedChallenges = completed,
 		};
 	}
 
 	/// <summary>What saving <paramref name="newFind"/> on top of <paramref name="before"/> earns.</summary>
 	public static Award AwardFor(Pack pack, IReadOnlyList<Find> before, Find newFind, ISet<string> viewedSpecies = null)
 	{
-		var was = Compute(pack, before, viewedSpecies);
-		var now = Compute(pack, before.Append(newFind), viewedSpecies);
+		var was = Compute(pack, before, viewedSpecies, newFind.When);
+		var now = Compute(pack, before.Append(newFind), viewedSpecies, newFind.When);
 		if (!newFind.Verified)
 			return new Award { Counted = false, Rarity = newFind.Rarity, After = now };
 		bool isNew = !was.Collection.ContainsKey(newFind.Scientific);
 		var earnedBefore = was.Badges.Where(b => b.Earned).Select(b => b.Id).ToHashSet();
+		var week = $"{Challenges.WeekStart(newFind.When):yyyy-MM-dd}|";
+		var newChallenges = now.ThisWeek.Where(c => c.Done && !was.CompletedChallenges.Contains(week + c.Id)).ToList();
 		return new Award
 		{
 			Counted = true,
@@ -167,6 +196,8 @@ public static class Progress
 			PhotoBonus = HasPhotoBonus(newFind) ? PhotoBonusPoints : 0,
 			Rarity = newFind.Rarity,
 			NewBadges = now.Badges.Where(b => b.Earned && !earnedBefore.Contains(b.Id)).ToList(),
+			NewChallenges = newChallenges,
+			ChallengePoints = now.ChallengePoints - was.ChallengePoints,
 			NewRank = now.Rank.Name != was.Rank.Name ? now.Rank : null,
 			After = now,
 		};

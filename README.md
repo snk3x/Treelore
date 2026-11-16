@@ -11,6 +11,9 @@ Every tree in the pack starts as a mystery shadow in the **Tree book**. Identify
 - New species: 10 (common), 25 (uncommon) or 50 (rare) leaves; rarity is local, based on how often the tree is actually observed nearby
 - Finding a species again: 2 leaves; photographing 3 different parts: +5
 - Ranks from Seedling to Forest Ranger, and badges such as Oak Squad, Winter Detective, Bark Reader, Invader Spotter and Safety Smart
+- Three weekly challenges worth 15 leaves each, built from the pack's traits and look-alike pairs ("Find a tree whose leaves grow in pairs", "Find both pecan and black walnut"); winter weeks skip challenges that need leaves
+
+Kid mode (on by default, in About) uses simpler words and bigger buttons and turns on the Tree book. Turning it off asks a quick multiplication question for grown-ups.
 
 Only answers the app is sure about (85% or more, after any follow-up question) count, so kids don't learn wrong names. Poison warnings always show before the celebration. There are no accounts, maps, sharing, ads or purchases.
 

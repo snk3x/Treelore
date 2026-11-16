@@ -1,4 +1,4 @@
-using TreeId;
+﻿using TreeId;
 
 namespace TreeMobile;
 
@@ -27,9 +27,11 @@ public class IdentifyPage : ContentPage
 	public IdentifyPage()
 	{
 		Title = "Identify";
-		var take = Ui.Primary("Take photo", () => AddPhoto(camera: true));
-		var pick = Ui.Secondary("From gallery", () => AddPhoto(camera: false));
-		var startOver = Ui.Secondary("Start over", () => { Reset(); return Task.CompletedTask; });
+		var take = Ui.Primary(Settings.Say("ðŸ“· Take picture", "Take photo"), () => AddPhoto(camera: true));
+		var pick = Ui.Secondary(Settings.Say("ðŸ–¼ Pick picture", "From gallery"), () => AddPhoto(camera: false));
+		var startOver = Ui.Secondary(Settings.Say("Start a new tree", "Start over"), () => { Reset(); return Task.CompletedTask; });
+		if (Settings.KidMode)
+			foreach (var b in new[] { take, pick, startOver }) { b.FontSize = 19; b.HeightRequest = 60; }
 
 		Content = new ScrollView
 		{
@@ -39,9 +41,12 @@ public class IdentifyPage : ContentPage
 				Spacing = 10,
 				Children =
 				{
-					Ui.Title("Identify a tree"),
-					Ui.Note("Photograph different parts of the same tree. Three photos (for example a leaf, the bark and the whole tree) give the best answer."),
-					Ui.Heading("What are you photographing?"),
+					Ui.Title(Settings.Say("Find a tree!", "Identify a tree")),
+					Ui.Note(Settings.Say(
+						"Take pictures of different parts of one tree. Three pictures work best: a leaf, the bark and the whole tree!",
+						"Photograph different parts of the same tree. Three photos (for example a leaf, the bark and the whole tree) give the best answer.")),
+					_challenge,
+					Ui.Heading(Settings.Say("What are you taking a picture of?", "What are you photographing?")),
 					_partChips,
 					Ui.Row(take, pick),
 					new ScrollView { Orientation = ScrollOrientation.Horizontal, Content = _thumbs },
@@ -54,6 +59,27 @@ public class IdentifyPage : ContentPage
 			},
 		};
 		Refresh();
+	}
+
+	readonly ContentView _challenge = new();
+
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
+		if (!Settings.KidMode) return;
+		await TreeEngine.LoadAsync();
+		// Nudge toward this week's first unfinished challenge
+		var next = FindStore.Progress().ThisWeek.FirstOrDefault(c => !c.Done);
+		_challenge.Content = next == null ? null : Ui.Card(new VerticalStackLayout
+		{
+			Spacing = 2,
+			Children =
+			{
+				new Label { Text = "ðŸŽ¯ This week's challenge", FontSize = 13, FontAttributes = FontAttributes.Bold }.AccentText(),
+				new Label { Text = next.Title, FontSize = 16, FontAttributes = FontAttributes.Bold },
+				Ui.Note($"+{next.Points} leaves. {next.Hint}"),
+			},
+		});
 	}
 
 	async Task AddPhoto(bool camera)
@@ -191,15 +217,19 @@ public class IdentifyPage : ContentPage
 		_location.Text = _lat == null ? "" : $"Using {_locationSource} to favor trees that grow nearby.";
 		if (_shots.Count == 0)
 		{
-			_hint.Text = "Start with a clear photo of a leaf, filling most of the frame.";
+			_hint.Text = Settings.Say("Start with a close-up picture of one leaf.", "Start with a clear photo of a leaf, filling most of the frame.");
 			return;
 		}
-		_hint.Text = _shots.Count < 3 ? $"Next: add a {TreeEngine.PartName(_part)} photo to improve the answer. Tap a photo to remove it." : "Tap a photo to remove it.";
+		string nextPart = TreeEngine.PartName(_part);
+		_hint.Text = _shots.Count < 3
+			? Settings.Say($"Next: take a picture of the {nextPart}! Tap a picture to remove it.", $"Next: add a {nextPart} photo to improve the answer. Tap a photo to remove it.")
+			: Settings.Say("Tap a picture to remove it.", "Tap a photo to remove it.");
 
 		var result = TreeEngine.Identifier.Identify(_shots, _lat, _lng, _answers);
 		var top = result.Top[0];
-		string verdict = top.Probability >= Identifier.ConfidentAt ? "Likely match"
-			: top.Probability >= 0.5 ? "Possible match" : "Not sure yet";
+		bool sure = top.Probability >= Identifier.ConfidentAt;
+		string verdict = sure ? Settings.Say("I think it'sâ€¦", "Likely match")
+			: top.Probability >= 0.5 ? Settings.Say("Maybe it'sâ€¦", "Possible match") : Settings.Say("Hmm, I'm not sure yet", "Not sure yet");
 		_results.Children.Add(Ui.Heading(verdict));
 
 		foreach (var c in result.Top.Where(c => c.Probability >= 0.02))
@@ -207,14 +237,20 @@ public class IdentifyPage : ContentPage
 
 		if (result.NextQuestion != null) _results.Children.Add(QuestionCard(result.NextQuestion));
 
-		if (top.Probability >= Identifier.ConfidentAt)
-			_results.Children.Add(Ui.Primary($"Save {top.Species.Common} to my tree book", () => Save(top)));
+		if (sure)
+		{
+			var save = Ui.Primary(Settings.Say($"Add {top.Species.Common} to my tree book! ðŸŒ³", $"Save {top.Species.Common}"), () => Save(top));
+			if (Settings.KidMode) { save.FontSize = 19; save.HeightRequest = 64; }
+			_results.Children.Add(save);
+		}
 		else
 		{
-			_results.Children.Add(Ui.Note("The app isn't sure yet, so this one won't go in the tree book. Add another photo, answer the question, or ask a grown-up to help check."));
-			_results.Children.Add(Ui.Secondary($"Save as a guess: {top.Species.Common}", () => Save(top)));
+			_results.Children.Add(Ui.Note(Settings.Say(
+				"I'm not sure enough yet, so this one can't go in your tree book. Try another picture, answer the question, or ask a grown-up to help.",
+				"The app isn't sure yet. Add another photo or answer the question for a better answer.")));
+			_results.Children.Add(Ui.Secondary(Settings.Say("Save it as a guess", $"Save anyway: {top.Species.Common}"), () => Save(top)));
 		}
-		_results.Children.Add(Ui.Note("Never eat or use a wild plant based on this app's answer."));
+		_results.Children.Add(Ui.Note(Settings.Say("Never eat any part of a wild plant!", "Never eat or use a wild plant based on this app's answer.")));
 	}
 
 	View CandidateCard(Candidate c)
@@ -225,7 +261,7 @@ public class IdentifyPage : ContentPage
 			Spacing = 2,
 			Children =
 			{
-				new Label { Text = $"{sp.Common}  ·  {c.Probability:P0}", FontSize = 18, FontAttributes = FontAttributes.Bold },
+				new Label { Text = $"{sp.Common}  Â·  {c.Probability:P0}", FontSize = 18, FontAttributes = FontAttributes.Bold },
 				new Label { Text = sp.Scientific, FontSize = 14, FontAttributes = FontAttributes.Italic }.MutedText(),
 				new ProgressBar { Progress = c.Probability, Margin = new Thickness(0, 4) }.Themed(ProgressBar.ProgressColorProperty, "#2E6B3A", "#8FD19E"),
 			},
@@ -233,14 +269,14 @@ public class IdentifyPage : ContentPage
 		if (_shots.Count > 1 && c.BestShot >= 0)
 			lines.Add(Ui.Note($"Strongest clue: your {TreeEngine.PartName(_shots[c.BestShot].Part)} photo"));
 		foreach (var warning in sp.Warnings)
-			lines.Add(new Label { Text = "⚠ " + warning, FontSize = 13 }.WarnText());
+			lines.Add(new Label { Text = "âš  " + warning, FontSize = 13 }.WarnText());
 		lines.Add(Ui.Note("Tap for details and look-alikes"));
 		return Ui.Card(lines).OnTap(() => Navigation.PushAsync(new SpeciesPage(sp)));
 	}
 
 	View QuestionCard(Question q)
 	{
-		var stack = new VerticalStackLayout { Spacing = 8, Children = { Ui.Heading("Quick question"), Ui.Body(q.Text) } };
+		var stack = new VerticalStackLayout { Spacing = 8, Children = { Ui.Heading(Settings.Say("Help me figure it out!", "Quick question")), Ui.Body(q.Text) } };
 		foreach (var option in q.Options)
 		{
 			string value = option[0];
@@ -270,7 +306,9 @@ public class IdentifyPage : ContentPage
 			var award = Progress.AwardFor(TreeEngine.Pack, FindStore.Load(), find, FindStore.Viewed());
 			FindStore.Add(find);
 			Reset();
-			if (award.Counted)
+			if (!Settings.KidMode)
+				await DisplayAlertAsync("Saved", $"{c.Species.Common} was added to My trees.", "OK");
+			else if (award.Counted)
 				await Navigation.PushModalAsync(new CelebrationPage(c.Species, find, award));
 			else
 				await DisplayAlertAsync("Saved as a guess", $"{c.Species.Common} is in My trees. It will count in your tree book once you find one the app is sure about.", "OK");

@@ -30,6 +30,31 @@ public class TreeBookPage : ContentPage
 		_content.Add(Ui.Title("Tree book"));
 		_content.Add(Game.RankPanel(p));
 
+		int daysLeft = (Challenges.WeekStart(DateTime.Now).AddDays(7) - DateTime.Now.Date).Days;
+		_content.Add(Ui.Heading("This week's challenges"));
+		_content.Add(Ui.Note($"{p.ThisWeek.Count(c => c.Done)} of {p.ThisWeek.Count} done · new challenges in {daysLeft} {(daysLeft == 1 ? "day" : "days")}"));
+		foreach (var ch in p.ThisWeek)
+		{
+			var c = ch;
+			_content.Add(Ui.Card(new Grid
+			{
+				ColumnDefinitions = { new(new GridLength(40)), new(GridLength.Star) },
+				Children =
+				{
+					new Label { Text = c.Done ? "✅" : "🎯", FontSize = 26, VerticalOptions = LayoutOptions.Center },
+					new VerticalStackLayout
+					{
+						Spacing = 2,
+						Children =
+						{
+							new Label { Text = c.Title, FontSize = 15, FontAttributes = FontAttributes.Bold, TextDecorations = c.Done ? TextDecorations.Strikethrough : TextDecorations.None },
+							Ui.Note(c.Done ? $"Done! +{c.Points} leaves" : $"+{c.Points} leaves · {c.Hint}"),
+						},
+					}.Column(1),
+				},
+			}));
+		}
+
 		_content.Add(Ui.Heading("Badges"));
 		var badges = new Grid { ColumnDefinitions = { new(GridLength.Star), new(GridLength.Star) }, ColumnSpacing = 8, RowSpacing = 8 };
 		for (int i = 0; i < p.Badges.Count; i++)

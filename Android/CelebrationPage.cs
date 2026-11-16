@@ -57,6 +57,15 @@ public class CelebrationPage : ContentPage
 		if (award.PhotoBonus > 0) leaves += $"\nincluding +{award.PhotoBonus} for photographing 3 different parts";
 		stack.Add(new Label { Text = leaves, FontSize = 20, FontAttributes = FontAttributes.Bold, TextColor = Color.FromArgb("#BBF7D0"), HorizontalTextAlignment = TextAlignment.Center });
 
+		foreach (var ch in award.NewChallenges)
+			stack.Add(new Border
+			{
+				BackgroundColor = Color.FromArgb("#1D4ED8"),
+				Padding = 12,
+				StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+				Content = new Label { Text = $"🎯  Challenge complete! +{ch.Points} leaves\n{ch.Title}", FontSize = 16, TextColor = Colors.White },
+			});
+
 		foreach (var b in award.NewBadges)
 			stack.Add(new Border
 			{

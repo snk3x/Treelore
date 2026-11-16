@@ -70,6 +70,13 @@ public static class Ui
 		return border;
 	}
 
+	/// <summary>Places a view in a grid column.</summary>
+	public static T Column<T>(this T view, int column) where T : View
+	{
+		Grid.SetColumn(view, column);
+		return view;
+	}
+
 	/// <summary>Makes any view open something when tapped.</summary>
 	public static T OnTap<T>(this T view, Func<Task> action) where T : View
 	{

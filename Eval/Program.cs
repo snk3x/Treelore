@@ -1,4 +1,4 @@
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using TreeId;
@@ -57,13 +57,13 @@ Find Make(string name, double conf, Rarity rarity, int day, params Part[] parts)
 };
 var none = new List<Find>();
 var a1 = Progress.AwardFor(pack, none, Make("Quercus virginiana", 0.95, Rarity.Common, 0, Part.Leaf));
-Check("first common find: new species, 10 leaves", a1.NewSpecies && a1.Points == 10);
+Check("first common find: new species, 10 leaves", a1.NewSpecies && a1.Points - a1.ChallengePoints == 10);
 Check("first find earns the First Find badge", a1.NewBadges.Any(b => b.Id == "first"));
 var after1 = new List<Find> { Make("Quercus virginiana", 0.95, Rarity.Common, 0, Part.Leaf) };
 var a2 = Progress.AwardFor(pack, after1, Make("Quercus virginiana", 0.95, Rarity.Common, 1, Part.Leaf));
-Check("repeat find: not new, 2 leaves", !a2.NewSpecies && a2.Points == Progress.RepeatPoints);
+Check("repeat find: not new, 2 leaves", !a2.NewSpecies && a2.Points - a2.ChallengePoints == Progress.RepeatPoints);
 var a3 = Progress.AwardFor(pack, after1, Make("Taxodium distichum", 0.95, Rarity.Rare, 1, Part.Leaf, Part.Bark, Part.WholeTree));
-Check("rare find with 3 parts: 50 + 5 photo bonus", a3.Points == 55 && a3.PhotoBonus == 5);
+Check("rare find with 3 parts: 50 + 5 photo bonus", a3.Points - a3.ChallengePoints == 55 && a3.PhotoBonus == 5);
 Check("leaf + bark earns Bark Reader", a3.NewBadges.Any(b => b.Id == "bark"));
 var a4 = Progress.AwardFor(pack, after1, Make("Quercus stellata", 0.60, Rarity.Common, 1, Part.Leaf));
 Check("unsure find (60%) earns nothing", !a4.Counted && a4.Points == 0 && a4.NewBadges.Count == 0);
@@ -73,7 +73,7 @@ Check("invasive tree earns Invader Spotter", a5.NewBadges.Any(b => b.Id == "inva
 var oakFinds = pack.Species.Where(s => s.Scientific.StartsWith("Quercus ")).Select((s, i) => Make(s.Scientific, 0.9, Rarity.Common, i, Part.Leaf)).ToList();
 var oakSummary = Progress.Compute(pack, oakFinds);
 Check("all 5 oaks earn Oak Squad", oakSummary.Badges.Single(b => b.Id == "oaks").Earned);
-Check("5 new commons = 50 leaves = Sprout rank", oakSummary.Points == 50 && oakSummary.Rank.Name == "Sprout");
+Check("5 new commons = 50 leaves = Sprout rank", oakSummary.Points - oakSummary.ChallengePoints == 50 && oakSummary.Rank.Name == "Sprout");
 var winterFind = Make("Platanus occidentalis", 0.9, Rarity.Common, 0, Part.Bark);
 winterFind.When = new DateTime(2027, 1, 10);
 Check("bare tree in January earns Winter Detective", Progress.Compute(pack, new[] { winterFind }).Badges.Single(b => b.Id == "winter").Earned);
@@ -82,6 +82,40 @@ evergreenWinter.When = new DateTime(2027, 1, 10);
 Check("evergreen live oak in January does not", !Progress.Compute(pack, new[] { evergreenWinter }).Badges.Single(b => b.Id == "winter").Earned);
 var poison = pack.Species.Where(s => s.IsPoisonous).Select(s => s.Scientific).ToHashSet();
 Check("reading every poisonous tree earns Safety Smart", Progress.Compute(pack, none, poison).Badges.Single(b => b.Id == "safety").Earned);
+
+// Weekly challenges
+var week1 = new DateTime(2026, 6, 3);
+var set1 = Challenges.ForWeek(pack, week1, none);
+var set1Again = Challenges.ForWeek(pack, week1.AddDays(3), none);
+Check("a week has 3 different challenges", set1.Count == 3 && set1.Select(c => c.Id).Distinct().Count() == 3);
+Check("the same week always gets the same challenges", set1.Select(c => c.Id).SequenceEqual(set1Again.Select(c => c.Id)));
+var weeksOfYear = Enumerable.Range(0, 52).Select(i => new DateTime(2026, 1, 5).AddDays(7 * i)).ToList();
+Check("challenges vary from week to week", weeksOfYear.Select(w => string.Join(",", Challenges.ForWeek(pack, w, none).Select(c => c.Id))).Distinct().Count() > 20);
+var leafy = new[] { "trait:lobed=yes", "trait:leaf=pinnate", "trait:leaf=bipinnate" };
+Check("no week has two challenges about the same trait", weeksOfYear.All(w =>
+	Challenges.ForWeek(pack, w, none).Where(c => c.Id.StartsWith("trait:")).Select(c => c.Id.Split('=')[0]).GroupBy(k => k).All(g => g.Count() == 1)));
+Check("winter weeks never ask for leaf shapes", weeksOfYear.Where(w => w.Month is 12 or 1 or 2)
+	.All(w => Challenges.ForWeek(pack, w, none).All(c => !leafy.Contains(c.Id))));
+
+// Complete a week's trait challenge with a matching tree, then check it pays out once
+var traitWeek = weeksOfYear.First(w => Challenges.ForWeek(pack, w, none)[0].Id.StartsWith("trait:"));
+var traitCh = Challenges.ForWeek(pack, traitWeek, none)[0];
+var (tKey, tVal) = (traitCh.Id[6..].Split('=')[0], traitCh.Id[6..].Split('=')[1]);
+var matching = pack.Species.First(s => s.Trait(tKey) == tVal);
+var match = Make(matching.Scientific, 0.95, Rarity.Common, 0, Part.Leaf);
+match.When = traitWeek.AddDays(2);
+var aw = Progress.AwardFor(pack, none, match);
+Check($"finding a {matching.Common} completes \"{traitCh.Title}\"", aw.NewChallenges.Any(c => c.Id == traitCh.Id) && aw.ChallengePoints >= Challenges.ChallengePoints);
+var sameAgain = Make(matching.Scientific, 0.95, Rarity.Common, 0, Part.Leaf);
+sameAgain.When = traitWeek.AddDays(3);
+Check("a challenge only pays once", Progress.AwardFor(pack, new List<Find> { match }, sameAgain).NewChallenges.All(c => c.Id != traitCh.Id));
+var lastWeek = Make(matching.Scientific, 0.95, Rarity.Common, 0, Part.Leaf);
+lastWeek.When = traitWeek.AddDays(-3);
+Check("a find from another week doesn't count", !Challenges.ForWeek(pack, traitWeek, new List<Find> { lastWeek })[0].Done);
+var unsureMatch = Make(matching.Scientific, 0.5, Rarity.Common, 0, Part.Leaf);
+unsureMatch.When = traitWeek.AddDays(2);
+Check("an unsure find doesn't complete challenges", Progress.AwardFor(pack, none, unsureMatch).NewChallenges.Count == 0);
+Console.WriteLine($"This week's challenges ({DateTime.Now:MMM d}): " + string.Join(" | ", Challenges.ForWeek(pack, DateTime.Now, none).Select(c => c.Title)));
 
 // Rarity should match what people actually see
 var austin = (30.27, -97.74);
